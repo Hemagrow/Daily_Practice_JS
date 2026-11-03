@@ -1,28 +1,42 @@
-import { age } from './utilites/age.js'
-import { name } from './utilites/name.js'
+const product_container = document.querySelector('.container');
 
-console.log(name, age)
+async function getCountries() {
+  try {
+    const response = await fetch("https://dummyjson.com/products");
 
-// import { name } from './utilities/name.js';
-
-// console.log(name);
-
-
-class Cars{
-    constructor(title, color, speed){
-        this.title = title,
-        this.color = color,
-        this.speed = speed
+    if (!response.ok) {
+      throw new Error("Something went wrong");
     }
-    info(){
-        console.log(this.title, this.color, this.speed)
-    }
-    speeda(){
-        console.log(this.color)
-    }
+
+    const data = await response.json();
+
+    const products = data.products;
+
+    products.forEach(product => {
+
+      product_container.innerHTML += `
+        <div class="product-card">
+          <h1 class="product-heading">${product.title}</h1>
+
+          <img class="product-img" src="${product.thumbnail}">
+
+          <p class="description">${product.description}</p>
+
+          <h3 class="price">$${product.price}</h3>
+
+          <p class="cat">${product.category}</p>
+
+          <p class="tags">${product.tags.join(", ")}</p>
+
+          <p class="brand">${product.brand || "No Brand"}</p>
+        </div>
+      `;
+
+    });
+
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
-const car1 = new Cars("BMW", "Black", 200);
-car1.info()
-car1.speeda()
-console.log(car1.color)
+getCountries();
